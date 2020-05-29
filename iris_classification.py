@@ -9,6 +9,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 # print("TensorFlow version: {}".format(tf.__version__))
 # print("Eager execution: {}".format(tf.executing_eagerly()))
 
+
 """ download dataset (training and testing) """
 train_dataset_url = "https://storage.googleapis.com/download.tensorflow.org/data/iris_training.csv"
 train_dataset_fp = tf.keras.utils.get_file(fname=os.path.basename(train_dataset_url),
@@ -18,6 +19,7 @@ test_url = "https://storage.googleapis.com/download.tensorflow.org/data/iris_tes
 test_fp = tf.keras.utils.get_file(fname=os.path.basename(test_url),
                                   origin=test_url)
 
+
 """ label the column name of the CSV file """
 column_names = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'species']
 feature_names = column_names[:-1]  # python seems very interesting! it includes everything to the last one!
@@ -25,6 +27,7 @@ label_name = column_names[-1]
 class_names = ['Iris Setosa', 'Iris Versicolor', 'Iris Virginica']
 # print("Features: {}".format(feature_names))
 # print("Label: {}".format(label_name))
+
 
 """ reformat for the training model """
 batch_size = 32
@@ -66,6 +69,7 @@ model = tf.keras.Sequential([
     tf.keras.layers.Dense(10, activation=tf.nn.relu),
     tf.keras.layers.Dense(3)
 ])
+
 
 """ output the prediction """
 predictions = model(features)
@@ -120,6 +124,7 @@ optimizer.apply_gradients(zip(grads, model.trainable_variables))
 print("Step: {}, Loss: {}".format(optimizer.iterations.numpy(),
                                   loss(model, features, labels, training=True).numpy()))
 
+
 # Note: Rerunning this cell uses the same model variables
 """ keeps training and optimization """
 # Keep results for plotting
@@ -166,6 +171,7 @@ axes[1].set_xlabel("Epoch", fontsize=14)
 axes[1].plot(train_accuracy_results)
 plt.show()
 
+
 """ evaluate accuracy of the model """
 test_accuracy = tf.keras.metrics.Accuracy()
 
@@ -178,6 +184,7 @@ for (x, y) in test_dataset:
 
 # print(tf.stack([y, prediction], axis=1))
 print("Test set accuracy: {:.3%}".format(test_accuracy.result()))
+
 
 """ apply the model on examples """
 predict_dataset = tf.convert_to_tensor([
