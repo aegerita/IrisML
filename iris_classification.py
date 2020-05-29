@@ -198,6 +198,7 @@ for i, logits in enumerate(predictions):
     name = class_names[class_idx]
     print("Example {} prediction: {} ({:4.1f}%)".format(i, name, 100 * p))
 
+""" save the model """
 # Save the entire model as a SavedModel.
 model.save('iris_model')
 
