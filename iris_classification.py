@@ -6,7 +6,7 @@ import tensorflow as tf
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 """ check version """
-# print("TensorFlow version: {}".format(tf.__version__))
+print("TensorFlow version: {}".format(tf.__version__))
 # print("Eager execution: {}".format(tf.executing_eagerly()))
 
 
@@ -18,7 +18,6 @@ train_dataset_fp = tf.keras.utils.get_file(fname=os.path.basename(train_dataset_
 test_url = "https://storage.googleapis.com/download.tensorflow.org/data/iris_test.csv"
 test_fp = tf.keras.utils.get_file(fname=os.path.basename(test_url),
                                   origin=test_url)
-
 
 """ label the column name of the CSV file """
 column_names = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'species']
@@ -69,7 +68,6 @@ model = tf.keras.Sequential([
     tf.keras.layers.Dense(10, activation=tf.nn.relu),
     tf.keras.layers.Dense(3)
 ])
-
 
 """ output the prediction """
 predictions = model(features)
@@ -124,7 +122,6 @@ optimizer.apply_gradients(zip(grads, model.trainable_variables))
 print("Step: {}, Loss: {}".format(optimizer.iterations.numpy(),
                                   loss(model, features, labels, training=True).numpy()))
 
-
 # Note: Rerunning this cell uses the same model variables
 """ keeps training and optimization """
 # Keep results for plotting
@@ -171,7 +168,6 @@ axes[1].set_xlabel("Epoch", fontsize=14)
 axes[1].plot(train_accuracy_results)
 plt.show()
 
-
 """ evaluate accuracy of the model """
 test_accuracy = tf.keras.metrics.Accuracy()
 
@@ -184,7 +180,6 @@ for (x, y) in test_dataset:
 
 # print(tf.stack([y, prediction], axis=1))
 print("Test set accuracy: {:.3%}".format(test_accuracy.result()))
-
 
 """ apply the model on examples """
 predict_dataset = tf.convert_to_tensor([
@@ -202,3 +197,11 @@ for i, logits in enumerate(predictions):
     p = tf.nn.softmax(logits)[class_idx]
     name = class_names[class_idx]
     print("Example {} prediction: {} ({:4.1f}%)".format(i, name, 100 * p))
+
+# Save the entire model as a SavedModel.
+model.save('iris_model')
+
+# Convert the model.
+converter = tf.lite.TFLiteConverter.from_saved_model('iris_model')
+tflite_model = converter.convert()
+open("iris_model.tflite", "wb").write(tflite_model)
